@@ -33,7 +33,11 @@ export async function runForResolvedClient(
   opts: { dryRun: boolean },
 ): Promise<RunResult> {
   const runDate = new Date();
-  const log = logger.child({ client: client.name, recordId: client.airtableRecordId });
+  const log = logger.child({
+    client: client.name,
+    recordId: client.airtableRecordId,
+    dataset: client.sanityDataset,
+  });
 
   if (!client.isReady) {
     log.info("client is not ready; skipping");
@@ -46,7 +50,7 @@ export async function runForResolvedClient(
 
   if (client.sanityStatus === "Greenlit") {
     const id = buildDocumentId(client.airtableRecordId, runDate);
-    if (await documentExists(id)) {
+    if (await documentExists(client.sanityDataset, id)) {
       log.info({ id }, "Greenlit document already exists; skipping generation");
       return { status: "skipped", reason: "already-published" };
     }
@@ -63,10 +67,10 @@ export async function runForResolvedClient(
   }
 
   if (asDraft) {
-    const { id } = await writeDraft(post);
+    const { id } = await writeDraft(client.sanityDataset, post);
     return { status: "draft", id };
   }
-  const { id } = await writePublished(post);
+  const { id } = await writePublished(client.sanityDataset, post);
   return { status: "published", id };
 }
 

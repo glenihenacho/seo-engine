@@ -30,6 +30,11 @@ export function recordToClient(record: AirtableRecord): Client {
   const sanityAuthorRef =
     typeof authorRaw === "string" && authorRaw.length > 0 ? authorRaw : null;
 
+  const datasetRaw = fields["Sanity Dataset"];
+  if (typeof datasetRaw !== "string" || datasetRaw.length === 0) {
+    throw new Error(`Missing or empty Sanity Dataset on record ${record.id}`);
+  }
+
   return Client.parse({
     airtableRecordId: record.id,
     name: String(fields["Name"] ?? ""),
@@ -37,6 +42,7 @@ export function recordToClient(record: AirtableRecord): Client {
     targetKeywords,
     audience: String(fields["Audience"] ?? ""),
     sanityStatus: status.data,
+    sanityDataset: datasetRaw,
     isReady: Boolean(fields["Is Ready for Gumloop"]),
     sanityAuthorRef,
   });

@@ -30,6 +30,7 @@ const baseClient: Client = {
   targetKeywords: ["kw"],
   audience: "aud",
   sanityStatus: "Greenlit",
+  sanityDataset: "acme",
   isReady: true,
   sanityAuthorRef: null,
 };
@@ -67,27 +68,30 @@ describe("runForResolvedClient routing", () => {
     expect(generatePost).not.toHaveBeenCalled();
   });
 
-  it("writes a draft on Needs Review", async () => {
+  it("writes a draft on Needs Review and passes the client's dataset", async () => {
     const r = await runForResolvedClient(
-      { ...baseClient, sanityStatus: "Needs Review" },
+      { ...baseClient, sanityStatus: "Needs Review", sanityDataset: "beta-co" },
       { dryRun: false },
     );
     expect(r.status).toBe("draft");
     expect(writeDraft).toHaveBeenCalledOnce();
+    expect(vi.mocked(writeDraft).mock.calls[0]?.[0]).toBe("beta-co");
     expect(writePublished).not.toHaveBeenCalled();
   });
 
-  it("publishes on Greenlit when no existing doc", async () => {
+  it("publishes on Greenlit when no existing doc, passing the client's dataset", async () => {
     const r = await runForResolvedClient(baseClient, { dryRun: false });
     expect(r.status).toBe("published");
     expect(writePublished).toHaveBeenCalledOnce();
+    expect(vi.mocked(writePublished).mock.calls[0]?.[0]).toBe("acme");
     expect(writeDraft).not.toHaveBeenCalled();
   });
 
-  it("skips generation on Greenlit when document already exists", async () => {
+  it("skips generation on Greenlit when document already exists in the client's dataset", async () => {
     vi.mocked(documentExists).mockResolvedValueOnce(true);
     const r = await runForResolvedClient(baseClient, { dryRun: false });
     expect(r).toEqual({ status: "skipped", reason: "already-published" });
+    expect(vi.mocked(documentExists).mock.calls[0]?.[0]).toBe("acme");
     expect(generatePost).not.toHaveBeenCalled();
     expect(writePublished).not.toHaveBeenCalled();
   });

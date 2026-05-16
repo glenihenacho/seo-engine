@@ -10,6 +10,7 @@ export const Client = z.object({
   targetKeywords: z.array(z.string()),
   audience: z.string(),
   sanityStatus: SanityStatus,
+  sanityDataset: z.string().min(1),
   isReady: z.boolean(),
   sanityAuthorRef: z.string().nullable(),
 });

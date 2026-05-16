@@ -10,6 +10,7 @@ const client: Client = {
   targetKeywords: ["kw"],
   audience: "a",
   sanityStatus: "Greenlit",
+  sanityDataset: "acme",
   isReady: true,
   sanityAuthorRef: null,
 };

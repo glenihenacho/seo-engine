@@ -33,7 +33,9 @@ Return a single JSON object, and nothing else. No prose, no markdown fences, no 
 
 ## Idempotency
 
-Generated content is written to Sanity under a deterministic document ID derived from `{airtableRecordId}.{YYYY-MM-DD}`. Same client + same day = same destination document. You do not need to handle this — it is the workflow's responsibility — but be aware that reruns are expected and safe.
+Generated content is written to the client's own Sanity dataset under a deterministic document ID derived from `{airtableRecordId}.{YYYY-MM-DD}`. Same client + same day = same destination document. You do not need to handle this — it is the workflow's responsibility — but be aware that reruns are expected and safe.
+
+Each client lives in its own Sanity dataset inside one shared project. The workflow looks up the dataset name from the client's Airtable row and constructs the Sanity client accordingly.
 
 ## Available tools
 

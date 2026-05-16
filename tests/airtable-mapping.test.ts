@@ -12,6 +12,7 @@ describe("recordToClient", () => {
         "Target Keywords": ["solar panel installers", "home solar costs"],
         Audience: "Homeowners 35-65",
         "Sanity Status": "Greenlit",
+        "Sanity Dataset": "acme",
         "Is Ready for Gumloop": true,
         "Sanity Author Ref": "author-acme",
       },
@@ -24,6 +25,7 @@ describe("recordToClient", () => {
       targetKeywords: ["solar panel installers", "home solar costs"],
       audience: "Homeowners 35-65",
       sanityStatus: "Greenlit",
+      sanityDataset: "acme",
       isReady: true,
       sanityAuthorRef: "author-acme",
     });
@@ -38,6 +40,7 @@ describe("recordToClient", () => {
         "Target Keywords": "one, two , three",
         Audience: "a",
         "Sanity Status": "Needs Review",
+        "Sanity Dataset": "beta-co",
         "Is Ready for Gumloop": true,
       },
     });
@@ -45,6 +48,7 @@ describe("recordToClient", () => {
     expect(client.targetKeywords).toEqual(["one", "two", "three"]);
     expect(client.sanityAuthorRef).toBeNull();
     expect(client.sanityStatus).toBe("Needs Review");
+    expect(client.sanityDataset).toBe("beta-co");
   });
 
   it("treats missing optional fields as null/empty/false", () => {
@@ -55,6 +59,7 @@ describe("recordToClient", () => {
         "Brand Voice": "y",
         Audience: "z",
         "Sanity Status": "Off",
+        "Sanity Dataset": "x",
         "Is Ready for Gumloop": false,
       },
     });
@@ -74,9 +79,25 @@ describe("recordToClient", () => {
           "Brand Voice": "y",
           Audience: "z",
           "Sanity Status": "Pending",
+          "Sanity Dataset": "x",
           "Is Ready for Gumloop": true,
         },
       }),
     ).toThrow(/Invalid Sanity Status/);
+  });
+
+  it("throws when Sanity Dataset is missing or empty", () => {
+    expect(() =>
+      recordToClient({
+        id: "recNODATASET",
+        fields: {
+          Name: "X",
+          "Brand Voice": "y",
+          Audience: "z",
+          "Sanity Status": "Greenlit",
+          "Is Ready for Gumloop": true,
+        },
+      }),
+    ).toThrow(/Missing or empty Sanity Dataset/);
   });
 });
