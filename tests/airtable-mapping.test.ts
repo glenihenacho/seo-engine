@@ -7,13 +7,13 @@ describe("recordToClient", () => {
     const client = recordToClient({
       id: "recABC",
       fields: {
-        Name: "Acme Co",
-        "Brand Voice": "Friendly and practical",
+        "Client Name": "Acme Co",
+        "Brand Voice Guidelines": "Friendly and practical",
         "Target Keywords": ["solar panel installers", "home solar costs"],
-        Audience: "Homeowners 35-65",
+        "Audience Segments (Summary)": "Homeowners 35-65",
         "Sanity Status": "Greenlit",
         "Sanity Dataset": "acme",
-        "Is Ready for Gumloop": true,
+        "Is Ready for Gumloop (Any)": true,
         "Sanity Author Ref": "author-acme",
       },
     });
@@ -35,13 +35,13 @@ describe("recordToClient", () => {
     const client = recordToClient({
       id: "recXYZ",
       fields: {
-        Name: "B",
-        "Brand Voice": "v",
+        "Client Name": "B",
+        "Brand Voice Guidelines": "v",
         "Target Keywords": "one, two , three",
-        Audience: "a",
+        "Audience Segments (Summary)": "a",
         "Sanity Status": "Needs Review",
         "Sanity Dataset": "beta-co",
-        "Is Ready for Gumloop": true,
+        "Is Ready for Gumloop (Any)": true,
       },
     });
 
@@ -55,12 +55,12 @@ describe("recordToClient", () => {
     const client = recordToClient({
       id: "recEMPTY",
       fields: {
-        Name: "X",
-        "Brand Voice": "y",
-        Audience: "z",
+        "Client Name": "X",
+        "Brand Voice Guidelines": "y",
+        "Audience Segments (Summary)": "z",
         "Sanity Status": "Off",
         "Sanity Dataset": "x",
-        "Is Ready for Gumloop": false,
+        "Is Ready for Gumloop (Any)": false,
       },
     });
 
@@ -75,12 +75,12 @@ describe("recordToClient", () => {
       recordToClient({
         id: "recBAD",
         fields: {
-          Name: "X",
-          "Brand Voice": "y",
-          Audience: "z",
+          "Client Name": "X",
+          "Brand Voice Guidelines": "y",
+          "Audience Segments (Summary)": "z",
           "Sanity Status": "Pending",
           "Sanity Dataset": "x",
-          "Is Ready for Gumloop": true,
+          "Is Ready for Gumloop (Any)": true,
         },
       }),
     ).toThrow(/Invalid Sanity Status/);
@@ -91,11 +91,11 @@ describe("recordToClient", () => {
       recordToClient({
         id: "recNODATASET",
         fields: {
-          Name: "X",
-          "Brand Voice": "y",
-          Audience: "z",
+          "Client Name": "X",
+          "Brand Voice Guidelines": "y",
+          "Audience Segments (Summary)": "z",
           "Sanity Status": "Greenlit",
-          "Is Ready for Gumloop": true,
+          "Is Ready for Gumloop (Any)": true,
         },
       }),
     ).toThrow(/Missing or empty Sanity Dataset/);

@@ -37,13 +37,13 @@ export function recordToClient(record: AirtableRecord): Client {
 
   return Client.parse({
     airtableRecordId: record.id,
-    name: String(fields["Name"] ?? ""),
-    brandVoice: String(fields["Brand Voice"] ?? ""),
+    name: String(fields["Client Name"] ?? ""),
+    brandVoice: String(fields["Brand Voice Guidelines"] ?? ""),
     targetKeywords,
-    audience: String(fields["Audience"] ?? ""),
+    audience: String(fields["Audience Segments (Summary)"] ?? ""),
     sanityStatus: status.data,
     sanityDataset: datasetRaw,
-    isReady: Boolean(fields["Is Ready for Gumloop"]),
+    isReady: Boolean(fields["Is Ready for Gumloop (Any)"]),
     sanityAuthorRef,
   });
 }
@@ -52,7 +52,7 @@ export async function listReadyClients(): Promise<Client[]> {
   const env = getEnv();
   const base = new Airtable({ apiKey: env.AIRTABLE_API_KEY }).base(env.AIRTABLE_BASE_ID);
   const records = await base(env.AIRTABLE_TABLE)
-    .select({ filterByFormula: "{Is Ready for Gumloop} = TRUE()" })
+    .select({ filterByFormula: "{Is Ready for Gumloop (Any)} = TRUE()" })
     .all();
 
   const clients: Client[] = [];
