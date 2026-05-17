@@ -41,7 +41,10 @@ function buildBrief(client: Client): string {
       client: client.name,
       brandVoice: client.brandVoice,
       audience: client.audience,
-      targetKeywords: client.targetKeywords,
+      industry: client.industry,
+      services: client.services,
+      painPoints: client.painPoints,
+      forbiddenTerms: client.forbiddenTerms,
       instruction:
         "Generate one blog post. Return ONLY a JSON object matching the ContentDraft schema. No prose, no fences.",
     },

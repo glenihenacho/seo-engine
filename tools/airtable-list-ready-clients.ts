@@ -16,16 +16,6 @@ export function recordToClient(record: AirtableRecord): Client {
     throw new Error(`Invalid Sanity Status "${statusRaw}" on record ${record.id}`);
   }
 
-  const keywordsRaw = fields["Target Keywords"];
-  const targetKeywords = Array.isArray(keywordsRaw)
-    ? keywordsRaw.map(String)
-    : typeof keywordsRaw === "string"
-      ? keywordsRaw
-          .split(/[\n,]/)
-          .map((s) => s.trim())
-          .filter(Boolean)
-      : [];
-
   const authorRaw = fields["Sanity Author Ref"];
   const sanityAuthorRef =
     typeof authorRaw === "string" && authorRaw.length > 0 ? authorRaw : null;
@@ -39,8 +29,11 @@ export function recordToClient(record: AirtableRecord): Client {
     airtableRecordId: record.id,
     name: String(fields["Client Name"] ?? ""),
     brandVoice: String(fields["Brand Voice Guidelines"] ?? ""),
-    targetKeywords,
     audience: String(fields["Audience Segments (Summary)"] ?? ""),
+    industry: String(fields["Industry"] ?? ""),
+    services: String(fields["Services (Summary)"] ?? ""),
+    painPoints: String(fields["Key Pain Points"] ?? ""),
+    forbiddenTerms: String(fields["Forbidden Terms"] ?? ""),
     sanityStatus: status.data,
     sanityDataset: datasetRaw,
     isReady: Boolean(fields["Is Ready for Gumloop (Any)"]),

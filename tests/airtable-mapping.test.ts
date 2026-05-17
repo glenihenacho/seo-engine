@@ -9,8 +9,11 @@ describe("recordToClient", () => {
       fields: {
         "Client Name": "Acme Co",
         "Brand Voice Guidelines": "Friendly and practical",
-        "Target Keywords": ["solar panel installers", "home solar costs"],
         "Audience Segments (Summary)": "Homeowners 35-65",
+        Industry: "Home Services",
+        "Services (Summary)": "Rooftop solar installation, battery storage",
+        "Key Pain Points": "High electric bills, grid outages",
+        "Forbidden Terms": "cheap, guaranteed savings",
         "Sanity Status": "Greenlit",
         "Sanity Dataset": "acme",
         "Is Ready for Gumloop (Any)": true,
@@ -22,33 +25,16 @@ describe("recordToClient", () => {
       airtableRecordId: "recABC",
       name: "Acme Co",
       brandVoice: "Friendly and practical",
-      targetKeywords: ["solar panel installers", "home solar costs"],
       audience: "Homeowners 35-65",
+      industry: "Home Services",
+      services: "Rooftop solar installation, battery storage",
+      painPoints: "High electric bills, grid outages",
+      forbiddenTerms: "cheap, guaranteed savings",
       sanityStatus: "Greenlit",
       sanityDataset: "acme",
       isReady: true,
       sanityAuthorRef: "author-acme",
     });
-  });
-
-  it("parses keywords from a comma-separated string", () => {
-    const client = recordToClient({
-      id: "recXYZ",
-      fields: {
-        "Client Name": "B",
-        "Brand Voice Guidelines": "v",
-        "Target Keywords": "one, two , three",
-        "Audience Segments (Summary)": "a",
-        "Sanity Status": "Needs Review",
-        "Sanity Dataset": "beta-co",
-        "Is Ready for Gumloop (Any)": true,
-      },
-    });
-
-    expect(client.targetKeywords).toEqual(["one", "two", "three"]);
-    expect(client.sanityAuthorRef).toBeNull();
-    expect(client.sanityStatus).toBe("Needs Review");
-    expect(client.sanityDataset).toBe("beta-co");
   });
 
   it("treats missing optional fields as null/empty/false", () => {
@@ -64,7 +50,10 @@ describe("recordToClient", () => {
       },
     });
 
-    expect(client.targetKeywords).toEqual([]);
+    expect(client.industry).toBe("");
+    expect(client.services).toBe("");
+    expect(client.painPoints).toBe("");
+    expect(client.forbiddenTerms).toBe("");
     expect(client.isReady).toBe(false);
     expect(client.sanityStatus).toBe("Off");
     expect(client.sanityAuthorRef).toBeNull();
