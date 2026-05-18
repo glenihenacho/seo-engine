@@ -1,15 +1,16 @@
 import { logger } from "../lib/logger.js";
 import type { SanityPost } from "../lib/models.js";
+import { sanityClientFor } from "../lib/sanity-client.js";
 
-// PR #1 stub. PR #2 will replace this with
-// `sanityClientFor(dataset).createIfNotExists(post)`.
 export async function writePublished(
   dataset: string,
   post: SanityPost,
 ): Promise<{ id: string }> {
+  const client = sanityClientFor(dataset);
+  const result = await client.createIfNotExists(post);
   logger.info(
-    { dataset, id: post._id, title: post.title },
-    "[stub] writePublished — Sanity write deferred to PR #2",
+    { dataset, id: result._id, title: post.title },
+    "wrote Sanity published doc",
   );
-  return { id: post._id };
+  return { id: result._id };
 }

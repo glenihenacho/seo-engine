@@ -7,8 +7,9 @@ Scheduled content engine: reads client briefs from Airtable, generates SEO blog 
 - `CLAUDE.md` — project memory, loaded as the cached system prompt on every generation run.
 - `agents/seo-writer.md` — subagent definition for the writer (model, role, output contract).
 - `tools/` — typed wrappers around Airtable and Sanity. Workflows call them directly in v1; future versions can hand them to subagents as Claude Agent SDK tools.
-- `workflows/` — trigger.dev tasks. `single-client.ts` runs one client (both CLI and task). `daily-run.ts` is the cron task.
+- `workflows/` — trigger.dev tasks. `single-client.ts` runs one client (both CLI and task). `daily-run.ts` is the cron task. `seed-author.ts` seeds the default `AI Content` author into one client dataset.
 - `lib/` — shared infra: env loading, models, ID building, markdown→PortableText, logger, generation.
+- `studio/` — Sanity Studio app holding the canonical `post` + `author` schema. One workspace per client dataset, all sharing the same schema.
 - `tests/` — vitest suite for the highest-value logic (Airtable mapping, workflow routing, payload shape).
 
 ## Setup
@@ -34,10 +35,41 @@ pnpm lint
 pnpm test
 ```
 
-## Deploy (PR #2)
+## Sanity Studio
 
-trigger.dev tasks live in `workflows/`. Deploy with `pnpm trigger:deploy` once Sanity credentials are configured and the schema is confirmed.
+The canonical post schema lives in `studio/`. One-time setup:
 
-## Status
+```bash
+pnpm sanity:install                                # installs studio deps
+export SANITY_STUDIO_PROJECT_ID=<projectId>
+export SANITY_STUDIO_DATASETS=acme,beta-co         # comma-separated client datasets
+pnpm sanity:dev                                    # boots Studio at localhost:3333
+pnpm sanity:schema:deploy                          # publishes the schema metadata
+pnpm sanity:deploy                                 # deploys hosted Studio
+```
 
-PR #1 scaffolds the project and ships a working dry-run that reads from Airtable and prints a generated Sanity payload to stdout. Sanity writes are stubbed with log statements pending schema confirmation. PR #2 will plug in real Sanity writes and deploy the daily cron.
+The workspace switcher lists every dataset in `SANITY_STUDIO_DATASETS`. Adding a new client = add their dataset slug to that env var and redeploy.
+
+## Seeding the default author
+
+Every dataset needs an `author.ai-content` document so generated posts have a reference to attach to:
+
+```bash
+pnpm cli:seed-author --dataset acme
+```
+
+Idempotent (safe to rerun). Run once per new client dataset before the first Greenlit publish.
+
+## Real writes
+
+`DRY_RUN=true` (the default) short-circuits Sanity writes and prints the would-be payload. To do a real write smoke test for one client:
+
+```bash
+DRY_RUN=false pnpm cli --client recXXXXXXXXXXXX
+```
+
+In production (trigger.dev), `DRY_RUN` is an env var on the project — flip to `false` after the first observed correct dry-run.
+
+## Deploy
+
+trigger.dev tasks live in `workflows/`. Deploy with `pnpm trigger:deploy` once Sanity credentials are configured.

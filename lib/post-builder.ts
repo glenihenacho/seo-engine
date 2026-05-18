@@ -12,6 +12,7 @@ export function buildPost(args: {
   const _id = asDraft
     ? buildDraftId(client.airtableRecordId, runDate)
     : buildDocumentId(client.airtableRecordId, runDate);
+  const authorRef = client.sanityAuthorRef ?? "author.ai-content";
 
   return SanityPost.parse({
     _id,
@@ -21,6 +22,7 @@ export function buildPost(args: {
     body: markdownToPortableText(draft.bodyMarkdown),
     metaDescription: draft.metaDescription,
     targetKeyword: draft.targetKeyword,
+    author: { _type: "reference", _ref: authorRef },
     generatedBy: "seo-engine",
     airtableClientId: client.airtableRecordId,
     generatedAt: draft.generatedAt,

@@ -4,6 +4,7 @@ node_modules
 dist
 .trigger
 .turbo
+.sanity
 coverage
 *.log
 .DS_Store

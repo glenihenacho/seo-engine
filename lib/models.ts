@@ -37,6 +37,9 @@ export const SanityPost = z.object({
   body: z.array(z.record(z.any())),
   metaDescription: z.string(),
   targetKeyword: z.string(),
+  author: z
+    .object({ _type: z.literal("reference"), _ref: z.string() })
+    .optional(),
   generatedBy: z.literal("seo-engine"),
   airtableClientId: z.string(),
   generatedAt: z.string().datetime(),

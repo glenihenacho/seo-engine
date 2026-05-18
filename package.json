@@ -10,8 +10,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "cli": "tsx workflows/single-client.ts",
+    "cli:seed-author": "tsx workflows/seed-author.ts",
     "trigger:dev": "trigger dev",
-    "trigger:deploy": "trigger deploy"
+    "trigger:deploy": "trigger deploy",
+    "sanity:install": "pnpm -C studio install",
+    "sanity:dev": "pnpm -C studio dev",
+    "sanity:deploy": "pnpm -C studio deploy",
+    "sanity:schema:deploy": "pnpm -C studio schema:deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",

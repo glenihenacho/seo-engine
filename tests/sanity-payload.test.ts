@@ -52,4 +52,21 @@ describe("buildPost", () => {
     expect(post.body[1]).toMatchObject({ _type: "block", style: "normal" });
     expect(post.body[2]).toMatchObject({ _type: "block", style: "normal" });
   });
+
+  it("defaults the author reference to author.ai-content when client has none", () => {
+    const post = buildPost({ client, draft, runDate, asDraft: false });
+    expect(post.author).toEqual({
+      _type: "reference",
+      _ref: "author.ai-content",
+    });
+  });
+
+  it("uses the client's sanityAuthorRef when provided", () => {
+    const branded = { ...client, sanityAuthorRef: "author.acme-team" };
+    const post = buildPost({ client: branded, draft, runDate, asDraft: false });
+    expect(post.author).toEqual({
+      _type: "reference",
+      _ref: "author.acme-team",
+    });
+  });
 });
