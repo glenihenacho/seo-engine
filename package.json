@@ -19,10 +19,10 @@
     "sanity:schema:deploy": "pnpm -C studio schema:deploy"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.96.0",
     "@sanity/client": "^6.22.0",
     "@trigger.dev/sdk": "^3.3.0",
     "airtable": "^0.12.2",
+    "openai": "^6.44.0",
     "pino": "^9.5.0",
     "pino-pretty": "^11.3.0",
     "zod": "^3.23.0"

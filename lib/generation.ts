@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 
 let cachedSystem: string | undefined;
-let cachedAnthropic: Anthropic | undefined;
+let cachedClient: OpenAI | undefined;
 
 function stripFrontmatter(input: string): string {
   if (!input.startsWith("---")) return input;
@@ -28,15 +28,15 @@ async function loadSystemPrompt(): Promise<string> {
   return cachedSystem;
 }
 
-function anthropic(): Anthropic {
-  if (!cachedAnthropic) {
+function openrouter(): OpenAI {
+  if (!cachedClient) {
     const env = getEnv();
-    cachedAnthropic = new Anthropic({
+    cachedClient = new OpenAI({
       apiKey: env.OPENROUTER_API_KEY,
       baseURL: env.OPENROUTER_BASE_URL,
     });
   }
-  return cachedAnthropic;
+  return cachedClient;
 }
 
 function buildBrief(client: Client): string {
@@ -70,24 +70,31 @@ export async function generatePost(client: Client): Promise<ContentDraft> {
   const env = getEnv();
   const system = await loadSystemPrompt();
 
-  const response = await anthropic().messages.create({
+  const response = await openrouter().chat.completions.create({
     model: env.MODEL_NAME,
     max_tokens: 4096,
-    system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: buildBrief(client) }],
+    messages: [
+      { role: "system", content: system },
+      { role: "user", content: buildBrief(client) },
+    ],
   });
 
-  const textBlock = response.content.find((c) => c.type === "text");
-  if (!textBlock || textBlock.type !== "text") {
-    throw new Error("Anthropic response contained no text block");
+  const text = response.choices[0]?.message?.content;
+  if (typeof text !== "string" || text.length === 0) {
+    throw new Error("OpenRouter response contained no text content");
   }
-  const raw = JSON.parse(extractJson(textBlock.text));
+  const raw = JSON.parse(extractJson(text));
   if (!raw.generatedAt) {
     raw.generatedAt = new Date().toISOString();
   }
   const draft = ContentDraft.parse(raw);
   logger.info(
-    { title: draft.title, slug: draft.slug, usage: response.usage },
+    {
+      title: draft.title,
+      slug: draft.slug,
+      model: response.model,
+      usage: response.usage,
+    },
     "draft generated",
   );
   return draft;

@@ -1,6 +1,6 @@
 # seo-engine
 
-Scheduled content engine: reads client briefs from Airtable, generates SEO blog posts with Claude, writes drafts or published documents to Sanity. Replaces the previous Gumloop flow.
+Scheduled content engine: reads client briefs from Airtable, generates SEO blog posts via OpenRouter (any model — Claude, GPT, Gemini), writes drafts or published documents to Sanity. Replaces the previous Gumloop flow.
 
 ## Layout
 
@@ -26,6 +26,8 @@ cp .env.example .env
 ```bash
 pnpm cli --client recXXXXXXXXXXXX --dry-run
 ```
+
+Generation routes through OpenRouter's universal `/v1/chat/completions`. Swap models by changing `MODEL_NAME` in `.env` — `anthropic/claude-sonnet-4.6`, `openai/gpt-5`, `google/gemini-2.5-pro`, etc. No code change.
 
 ## Checks
 
