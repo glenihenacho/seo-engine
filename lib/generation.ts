@@ -30,7 +30,11 @@ async function loadSystemPrompt(): Promise<string> {
 
 function anthropic(): Anthropic {
   if (!cachedAnthropic) {
-    cachedAnthropic = new Anthropic({ apiKey: getEnv().ANTHROPIC_API_KEY });
+    const env = getEnv();
+    cachedAnthropic = new Anthropic({
+      apiKey: env.OPENROUTER_API_KEY,
+      baseURL: env.OPENROUTER_BASE_URL,
+    });
   }
   return cachedAnthropic;
 }

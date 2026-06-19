@@ -8,7 +8,7 @@ import {
 
 beforeEach(() => {
   process.env.AIRTABLE_API_KEY = "ak";
-  process.env.ANTHROPIC_API_KEY = "ank";
+  process.env.OPENROUTER_API_KEY = "ork";
   process.env.SANITY_PROJECT_ID = "proj";
   process.env.SANITY_TOKEN = "tok";
   resetEnvCacheForTests();

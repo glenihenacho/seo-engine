@@ -18,7 +18,7 @@ Scheduled content engine: reads client briefs from Airtable, generates SEO blog 
 nvm use
 pnpm install
 cp .env.example .env
-# fill in AIRTABLE_API_KEY and ANTHROPIC_API_KEY at minimum
+# fill in AIRTABLE_API_KEY and OPENROUTER_API_KEY at minimum
 ```
 
 ## Local run (dry-run, prints would-be Sanity payload)
