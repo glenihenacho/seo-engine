@@ -1,7 +1,7 @@
 import { defineConfig } from "@trigger.dev/sdk/v3";
 
 export default defineConfig({
-  project: "proj_seo_engine_REPLACE_ME",
+  project: "proj_mdnqbmfihmqoxrbbuklv",
   runtime: "node",
   logLevel: "info",
   maxDuration: 600,
