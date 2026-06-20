@@ -36,6 +36,7 @@ const baseClient: Client = {
   sanityDataset: "acme",
   isReady: true,
   sanityAuthorRef: null,
+  dryRun: false,
 };
 
 const draft: ContentDraft = {

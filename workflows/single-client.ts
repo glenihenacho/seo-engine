@@ -3,7 +3,6 @@ import { pathToFileURL } from "node:url";
 
 import { task } from "@trigger.dev/sdk/v3";
 
-import { getEnv } from "../lib/config.js";
 import { generatePost } from "../lib/generation.js";
 import { buildDocumentId } from "../lib/ids.js";
 import { logger } from "../lib/logger.js";
@@ -22,9 +21,8 @@ export type RunResult =
   | { status: "dry-run"; id: string };
 
 export async function runForClient(args: RunArgs): Promise<RunResult> {
-  const env = getEnv();
-  const dryRun = args.dryRun ?? env.DRY_RUN;
   const client = await getClient(args.recordId);
+  const dryRun = args.dryRun ?? client.dryRun;
   return runForResolvedClient(client, { dryRun });
 }
 

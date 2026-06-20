@@ -10,9 +10,6 @@ const Env = z.object({
   OPENROUTER_API_KEY: z.string().min(1),
   OPENROUTER_BASE_URL: z.string().default("https://openrouter.ai/api/v1"),
   MODEL_NAME: z.string().default("anthropic/claude-sonnet-4.6"),
-  DRY_RUN: z
-    .preprocess((v) => (typeof v === "string" ? v.toLowerCase() === "true" : v), z.boolean())
-    .default(true),
   LOG_LEVEL: z.string().default("info"),
 });
 

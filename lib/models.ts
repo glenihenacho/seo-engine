@@ -16,6 +16,7 @@ export const Client = z.object({
   sanityDataset: z.string().min(1),
   isReady: z.boolean(),
   sanityAuthorRef: z.string().nullable(),
+  dryRun: z.boolean().default(true),
 });
 export type Client = z.infer<typeof Client>;
 

@@ -64,13 +64,15 @@ Idempotent (safe to rerun). Run once per new client dataset before the first Gre
 
 ## Real writes
 
-`DRY_RUN=true` (the default) short-circuits Sanity writes and prints the would-be payload. To do a real write smoke test for one client:
+Dry-run is a per-client toggle on the Airtable Clients row (`Dry Run` checkbox). When checked (or unset — default is `true`), the run short-circuits Sanity writes and prints the would-be payload. Uncheck on a per-client basis to enable real writes for that client.
+
+The CLI accepts `--dry-run` as a one-off override:
 
 ```bash
-DRY_RUN=false pnpm cli --client recXXXXXXXXXXXX
+pnpm cli --client recXXXXXXXXXXXX --dry-run
 ```
 
-In production (trigger.dev), `DRY_RUN` is an env var on the project — flip to `false` after the first observed correct dry-run.
+Without the flag, the CLI honors the Airtable value.
 
 ## Deploy
 
