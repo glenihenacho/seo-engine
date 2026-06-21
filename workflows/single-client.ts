@@ -22,13 +22,12 @@ export type RunResult =
 
 export async function runForClient(args: RunArgs): Promise<RunResult> {
   const client = await getClient(args.recordId);
-  const dryRun = args.dryRun ?? client.dryRun;
-  return runForResolvedClient(client, { dryRun });
+  return runForResolvedClient(client, { dryRun: args.dryRun });
 }
 
 export async function runForResolvedClient(
   client: Client,
-  opts: { dryRun: boolean },
+  opts: { dryRun?: boolean } = {},
 ): Promise<RunResult> {
   const runDate = new Date();
   const log = logger.child({
@@ -46,6 +45,8 @@ export async function runForResolvedClient(
     return { status: "skipped", reason: "status-off" };
   }
 
+  const dryRun = opts.dryRun ?? client.sanityStatus === "Dry Run";
+
   if (client.sanityStatus === "Greenlit") {
     const id = buildDocumentId(client.airtableRecordId, runDate);
     if (await documentExists(client.sanityDataset, id)) {
@@ -55,10 +56,10 @@ export async function runForResolvedClient(
   }
 
   const draft = await generatePost(client);
-  const asDraft = client.sanityStatus === "Needs Review";
+  const asDraft = client.sanityStatus !== "Greenlit";
   const post = buildPost({ client, draft, runDate, asDraft });
 
-  if (opts.dryRun) {
+  if (dryRun) {
     log.info({ id: post._id, status: client.sanityStatus }, "DRY RUN: would write to Sanity");
     process.stdout.write(JSON.stringify(post, null, 2) + "\n");
     return { status: "dry-run", id: post._id };

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SanityStatus = z.enum(["Off", "Needs Review", "Greenlit"]);
+export const SanityStatus = z.enum(["Off", "Dry Run", "Needs Review", "Greenlit"]);
 export type SanityStatus = z.infer<typeof SanityStatus>;
 
 export const Client = z.object({
@@ -16,7 +16,6 @@ export const Client = z.object({
   sanityDataset: z.string().min(1),
   isReady: z.boolean(),
   sanityAuthorRef: z.string().nullable(),
-  dryRun: z.boolean().default(true),
 });
 export type Client = z.infer<typeof Client>;
 

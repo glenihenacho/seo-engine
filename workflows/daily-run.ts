@@ -21,7 +21,7 @@ export const dailyRun = schedules.task({
     const outcomes: ClientOutcome[] = [];
     for (const client of clients) {
       try {
-        const result = await runForResolvedClient(client, { dryRun: client.dryRun });
+        const result = await runForResolvedClient(client);
         outcomes.push({
           recordId: client.airtableRecordId,
           name: client.name,

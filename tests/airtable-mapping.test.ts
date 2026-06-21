@@ -18,7 +18,6 @@ describe("recordToClient", () => {
         "Sanity Dataset": "acme",
         "Is Ready for Gumloop (Any)": true,
         "Sanity Author Ref": "author-acme",
-        "Dry Run": false,
       },
     });
 
@@ -35,23 +34,22 @@ describe("recordToClient", () => {
       sanityDataset: "acme",
       isReady: true,
       sanityAuthorRef: "author-acme",
-      dryRun: false,
     });
   });
 
-  it("defaults Dry Run to true when the Airtable field is unset", () => {
+  it("accepts 'Dry Run' as a valid Sanity Status", () => {
     const client = recordToClient({
-      id: "recNODR",
+      id: "recDR",
       fields: {
         "Client Name": "X",
         "Brand Voice Guidelines": "y",
         "Audience Segments (Summary)": "z",
-        "Sanity Status": "Off",
+        "Sanity Status": "Dry Run",
         "Sanity Dataset": "x",
-        "Is Ready for Gumloop (Any)": false,
+        "Is Ready for Gumloop (Any)": true,
       },
     });
-    expect(client.dryRun).toBe(true);
+    expect(client.sanityStatus).toBe("Dry Run");
   });
 
   it("treats missing optional fields as null/empty/false", () => {

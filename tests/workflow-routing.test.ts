@@ -36,7 +36,6 @@ const baseClient: Client = {
   sanityDataset: "acme",
   isReady: true,
   sanityAuthorRef: null,
-  dryRun: false,
 };
 
 const draft: ContentDraft = {
@@ -105,6 +104,14 @@ describe("runForResolvedClient routing", () => {
       { ...baseClient, sanityStatus: "Needs Review" },
       { dryRun: true },
     );
+    expect(r.status).toBe("dry-run");
+    expect(generatePost).toHaveBeenCalledOnce();
+    expect(writeDraft).not.toHaveBeenCalled();
+    expect(writePublished).not.toHaveBeenCalled();
+  });
+
+  it("Dry Run status implies dry-run without an explicit override", async () => {
+    const r = await runForResolvedClient({ ...baseClient, sanityStatus: "Dry Run" });
     expect(r.status).toBe("dry-run");
     expect(generatePost).toHaveBeenCalledOnce();
     expect(writeDraft).not.toHaveBeenCalled();

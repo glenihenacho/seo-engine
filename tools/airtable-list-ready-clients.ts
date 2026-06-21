@@ -38,7 +38,6 @@ export function recordToClient(record: AirtableRecord): Client {
     sanityDataset: datasetRaw,
     isReady: Boolean(fields["Is Ready for Gumloop (Any)"]),
     sanityAuthorRef,
-    dryRun: typeof fields["Dry Run"] === "boolean" ? (fields["Dry Run"] as boolean) : true,
   });
 }
 
