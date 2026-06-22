@@ -7,7 +7,7 @@ Scheduled content engine: reads client briefs from Airtable, generates SEO blog 
 - `CLAUDE.md` — project memory, loaded as the cached system prompt on every generation run.
 - `agents/seo-writer.md` — subagent definition for the writer (model, role, output contract).
 - `tools/` — typed wrappers around Airtable and Sanity. Workflows call them directly in v1; future versions can hand them to subagents as Claude Agent SDK tools.
-- `workflows/` — trigger.dev tasks. `single-client.ts` runs one client (both CLI and task). `daily-run.ts` is the cron task. `seed-author.ts` seeds the default `AI Content` author into one client dataset.
+- `workflows/` — trigger.dev tasks. `weekly-schedule.ts` is the Sunday cron that fans out future runs. `single-client.ts` runs one client (both CLI and task). `seed-author.ts` seeds the default `AI Content` author into one client dataset.
 - `lib/` — shared infra: env loading, models, ID building, markdown→PortableText, logger, generation.
 - `studio/` — Sanity Studio app holding the canonical `post` + `author` schema. One workspace per client dataset, all sharing the same schema.
 - `tests/` — vitest suite for the highest-value logic (Airtable mapping, workflow routing, payload shape).
@@ -76,6 +76,19 @@ The CLI accepts `--dry-run` as a one-off override (forces no write regardless of
 ```bash
 pnpm cli --client recXXXXXXXXXXXX --dry-run
 ```
+
+## How scheduling works
+
+Per-client cadence is driven by the `Content Schedules` table in Airtable. Each Active row links to a Client and carries:
+
+- `Posting Windows` — JSON array `[{day:0..6 (0=Sun), start:"HH:MM", end:"HH:MM"}, ...]`. One window = one weekly post.
+- `Posts per week` — sanity-check; warns if it doesn't match window count.
+
+`seo-engine.weekly-schedule` runs Sundays at 00:00 UTC. For each Active schedule and each window, it picks a random whole hour in `[startHour, endHour)`, computes the next UTC datetime on the right weekday, and `batchTrigger`s a future `seo-engine.single-client` run at that moment. Trigger.dev holds the run and fires it on schedule.
+
+Idempotency key: `${clientRecordId}-${scheduleRecordId}-${YYYY-MM-DD}`. Rerunning the compiler the same week is a no-op. Editing a window mid-week only affects days that haven't been keyed yet.
+
+The `single-client` task is queued with `concurrencyLimit: 4` so clustered slots don't burst Airtable or OpenRouter.
 
 ## Deploy
 

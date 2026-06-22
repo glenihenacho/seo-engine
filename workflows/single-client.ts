@@ -75,6 +75,7 @@ export async function runForResolvedClient(
 
 export const singleClient = task({
   id: "seo-engine.single-client",
+  queue: { concurrencyLimit: 4 },
   run: async (payload: RunArgs) => runForClient(payload),
 });
 

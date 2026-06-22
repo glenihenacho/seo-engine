@@ -45,3 +45,21 @@ export const SanityPost = z.object({
   generatedAt: z.string().datetime(),
 });
 export type SanityPost = z.infer<typeof SanityPost>;
+
+export const PostingWindow = z.object({
+  day: z.number().int().min(0).max(6),
+  start: z.string().regex(/^\d{2}:\d{2}$/),
+  end: z.string().regex(/^\d{2}:\d{2}$/),
+});
+export type PostingWindow = z.infer<typeof PostingWindow>;
+
+export const ContentSchedule = z.object({
+  airtableRecordId: z.string(),
+  name: z.string(),
+  clientRecordId: z.string(),
+  type: z.string().optional(),
+  postsPerWeek: z.number().int().positive().optional(),
+  postingWindows: z.array(PostingWindow),
+  active: z.boolean(),
+});
+export type ContentSchedule = z.infer<typeof ContentSchedule>;

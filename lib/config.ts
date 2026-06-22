@@ -4,6 +4,7 @@ const Env = z.object({
   AIRTABLE_API_KEY: z.string().min(1),
   AIRTABLE_BASE_ID: z.string().default("app1dXnj3CwDlL5Hj"),
   AIRTABLE_TABLE: z.string().default("Clients"),
+  AIRTABLE_SCHEDULES_TABLE: z.string().default("Content Schedules"),
   SANITY_PROJECT_ID: z.string().default(""),
   SANITY_TOKEN: z.string().default(""),
   SANITY_API_VERSION: z.string().default("2024-10-01"),
